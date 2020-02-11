@@ -4,4 +4,4 @@ const Hubs = require("./db");
 
 const router = express.Router();
 
-module.exports = router; 
+module.exports = router;
