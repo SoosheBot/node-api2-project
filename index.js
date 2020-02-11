@@ -1,10 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 
 const dbRouter = require("./hubs/db-router");
 
 const server = express();
 
 server.use(express.json());
+server.use(cors());
 
 server.use("/api/hubs", dbRouter);
 
