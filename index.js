@@ -8,7 +8,7 @@ const server = express();
 server.use(express.json());
 server.use(cors());
 
-server.use("/api/hubs", dbRouter);
+server.use("/api/posts", dbRouter);
 
 server.get("/", (req, res) => {
   res.send(`
