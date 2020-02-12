@@ -91,49 +91,50 @@ router.get("/:id/comments", (req, res) => {
 
 //DELETE
 router.delete("/:id", (req, res) => {
-    const { id } = req.params;
-    db.remove(id)
-      .then(posts => {
-        if (!posts) {
-          res.status(404).json({ message: "ID does not exist" });
+  const { id } = req.params;
+  db.remove(id)
+    .then(posts => {
+      if (posts) {
+        console.log(`Post ID #${id} has been removed`);
+        res.status(201).json(posts);
+      } else {
+        res.status(404).json({ message: "ID does not exist" });
+      }
+    })
+    .catch(err => {
+      console.log("DELETE err", err);
+      res.status(500).json({ errorMessage: "The post could not be removed" });
+    });
+});
+
+// PUT
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const posts = { ...req.body };
+
+  if (!posts.title || !posts.contents) {
+    res
+      .status(400)
+      .json({
+        errorMessage: "Please provide title and contents for the post."
+      });
+  } else {
+    db.update(id, posts)
+      .then(post => {
+        if (post) {
+          res.status(200).json(post);
         } else {
-          console.log(`Post ID #${id} has been removed`);
-          res.status(201).json(users);
+          res.status(404).json({
+            message: "The user with the specified ID does not exist."
+          });
         }
       })
       .catch(err => {
-        console.log("DELETE err", err);
-        res.status(500).json({ errorMessage: "The post could not be removed" });
+        res
+          .status(500)
+          .json({ error: "The posts information could not be modified." });
       });
-  });
-  
-  // PUT
-  router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const posts = { ...req.body };
-  
-    if (!posts.title || !posts.contents) {
-      res
-        .status(400)
-        .json({ errorMessage: "Please provide title and contents for the post." });
-    } else {
-      db.update(id, posts)
-        .then(post => {
-          if (post) {
-            res.status(200).json(post);
-          } else {
-            res.status(404).json({
-              message: "The user with the specified ID does not exist."
-            });
-          }
-        })
-        .catch(err => {
-          res
-            .status(500)
-            .json({ error: "The posts information could not be modified." });
-        });
-    }
-  });
-  
+  }
+});
 
 module.exports = router;
