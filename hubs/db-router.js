@@ -93,34 +93,34 @@ router.get("/:id/comments", (req, res) => {
 router.delete("/:id", (req, res) => {
     const { id } = req.params;
     db.remove(id)
-      .then(users => {
-        if (!users) {
+      .then(posts => {
+        if (!posts) {
           res.status(404).json({ message: "ID does not exist" });
         } else {
-          console.log(`User ID #${id} has been removed`);
+          console.log(`Post ID #${id} has been removed`);
           res.status(201).json(users);
         }
       })
       .catch(err => {
         console.log("DELETE err", err);
-        res.status(500).json({ errorMessage: "The user could not be removed" });
+        res.status(500).json({ errorMessage: "The post could not be removed" });
       });
   });
   
   // PUT
   router.put("/:id", (req, res) => {
     const { id } = req.params;
-    const users = { ...req.body };
+    const posts = { ...req.body };
   
-    if (!users.name || !users.bio) {
+    if (!posts.title || !posts.contents) {
       res
         .status(400)
-        .json({ errorMessage: "Please provide name and bio for the user." });
+        .json({ errorMessage: "Please provide title and contents for the post." });
     } else {
-      db.update(id, users)
-        .then(user => {
-          if (user) {
-            res.status(200).json(user);
+      db.update(id, posts)
+        .then(post => {
+          if (post) {
+            res.status(200).json(post);
           } else {
             res.status(404).json({
               message: "The user with the specified ID does not exist."
@@ -130,7 +130,7 @@ router.delete("/:id", (req, res) => {
         .catch(err => {
           res
             .status(500)
-            .json({ error: "The user information could not be modified." });
+            .json({ error: "The posts information could not be modified." });
         });
     }
   });
